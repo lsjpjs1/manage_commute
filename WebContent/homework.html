@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript">
+		var Node = function(id,parent){
+			this.id = id;
+			this.parent = parent;
+			this.child = null;
+			return this;
+		}
+		var RootNode = function(id){
+			this.id = id;
+			this.child = null;
+			return this;
+		}
+		var tree = new Object()
+		tree.rootNode = null;
+		tree.node =[];
+		
+		function createRootNode(id){
+			if(tree.rootNode==null){
+				tree.rootNode = new RootNode(id);
+				console.log(id);console.log('로 루트노드 설정');
+			}else {
+				console.log('이미 루트노드가 존재합니다.');
+				}
+		}
+
+		function getNode(id){
+			if (tree.rootNode.id == id){
+				return tree.rootNode;
+			}else{
+				for(var i=0;i<tree.node.length;i++){
+					if(tree.node[i].id==id){
+						return tree.node[i];
+					}
+				}
+			}
+			return null;
+		}
+		
+		function addNode(id,parent){
+			if(getNode(parent)==null){
+				console.log('해당 부모 노드가 존재하지 않음');
+			}else{
+				tree.node.push(new Node(id,parent));
+				getNode(parent).child = id;
+				console.log(id);console.log(parent);console.log('노드 추가');
+			}
+		}
+		console.log(new RootNode('abc'));
+	   
+</script>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+</head>
+<body>
+</body>
+</html>
