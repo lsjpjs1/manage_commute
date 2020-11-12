@@ -120,6 +120,7 @@
  
  <span id="leave"><button style="height: 80px; width:100px" onclick="location='clickLeaveAction.jsp'">퇴근</button></span>
  <span id="reLeave"><button style="height: 80px; width:100px" onclick="location='reClickLeaveAction.jsp'">다시 퇴근</button></span>
+ <input type="checkbox" id="lunchCheck" onchange="location='lunchCheckAction.jsp'" name="lunchCheck" >점심시간 근무 여부
  <%
  SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	
@@ -140,7 +141,7 @@
 	String workDate = formatterForDate.format(d);
 
 	int result =WorkDAO.isNullWorkEndReal(userId, workDate);
-	System.out.println(result);
+
  if(result==-3){ %>
  <script>
  document.getElementById("leave").style.display="none";
@@ -152,6 +153,18 @@
  document.getElementById("reLeave").style.display="none";
  </script>
  <%} %>
+ 
+ 
+ <%if(WorkDAO.getLunch(userId, workDate).equals("O")){%>
+ <script>
+ document.getElementById("lunchCheck").checked=true;
+ </script>
+ <%}else{ %>
+  <script>
+ document.getElementById("lunchCheck").checked=false;
+ </script>
+ <%} %>
+ 
  
  <form action="addWorkContent.jsp" method="post">
  <pre>

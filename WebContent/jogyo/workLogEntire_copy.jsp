@@ -32,7 +32,7 @@ String userId=null;
 
 userId = (String) session.getAttribute("userId");//유저아이디에 해당 세션값을 넣어준다.
 
-if(!UserDAO.getUserAdmin(userId).equals("admin")){
+/*if(!UserDAO.getUserAdmin(userId).equals("admin")){
 	PrintWriter script = response.getWriter();
 
 	script.println("<script>");
@@ -42,7 +42,7 @@ if(!UserDAO.getUserAdmin(userId).equals("admin")){
 	script.println("location.href = 'main_jogyo.jsp'");
 
 	script.println("</script>");
-}
+}*/
 
 String userId2 = userId;
 
@@ -122,7 +122,6 @@ float sumWorkUnit = 0;
 long sumWorkTimeMilliSec = 0;
 float sumWorkTime = 0f;
 ArrayList workTimeList = new ArrayList();
-workTimeList.add(0,0f);
 for(int i=0; i<workLog.size();i++){
 	if(workLog.get(i).getWorkStartReal()!=null && workLog.get(i).getWorkEndReal()!=null){
 		workStartRealStr = formatter.format(workLog.get(i).getWorkStartReal());
@@ -496,7 +495,7 @@ int intToday = Integer.parseInt(sdf.format(todayCal.getTime()));
 	<TD width='60px' align="center">
 	
 	<%
-if(UserDAO.getUserPosition(userId).equals("연구원")){%>
+if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("연구원")){%>
 근무 단위
 <%}else{ %>
 근무 시간
@@ -506,7 +505,7 @@ if(UserDAO.getUserPosition(userId).equals("연구원")){%>
 	
 	<TD width='242px' align="center">
 	<%
-if(UserDAO.getUserPosition(userId).equals("연구원")){%>
+if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("연구원")){%>
 비고
 <%}else{ %>
 근무 내용
@@ -596,10 +595,17 @@ String workStartReal = WorkDAO.getWorkStartReal(userId, yyyymmddForCheck);
 		String workDateStr = transFormat.format(workLog.get(i).getWorkDate());
 		
 		if(workDateStr.equals(yyyymmddForCheck)){  %>
-			<%=workLog.get(i).getWorkStartReal() %>
+			<div id="workStartReal"+<%=index %>><%=workLog.get(i).getWorkStartReal() %></div>
 		<% }else{}
 	 } %>
-	
+	<button onclick="edit()">edit</button>
+	<script>
+	function edit(){
+		addText=document.createElement("input");
+		addText.type="textBox";
+		document.getElementById("workStartReal")
+	}
+	</script>
 	</td>
 
 
@@ -660,7 +666,7 @@ String workStartReal = WorkDAO.getWorkStartReal(userId, yyyymmddForCheck);
 <div id="sumWorkUnit" style="display:block">총 근무 단위 : <%=sumWorkUnit %> 단위</div>
 </div>
 <%
-if(UserDAO.getUserPosition(userId).equals("연구원")){%>
+if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("연구원")){%>
 <script>
 document.getElementById("sumWorkTime").style.display="none";
 document.getElementById("sumWorkUnit").style.display="block";

@@ -91,6 +91,7 @@ String workEndRealStr = "";
 long sumWorkTimeMilliSec = 0;
 float sumWorkTime = 0f;
 ArrayList workTimeList = new ArrayList();
+workTimeList.add(0,0f);
 for(int i=0; i<workLog.size();i++){
 	if(workLog.get(i).getWorkStartReal()!=null && workLog.get(i).getWorkEndReal()!=null){
 		workStartRealStr = formatter.format(workLog.get(i).getWorkStartReal());

@@ -122,6 +122,7 @@ float sumWorkUnit = 0;
 long sumWorkTimeMilliSec = 0;
 float sumWorkTime = 0f;
 ArrayList workTimeList = new ArrayList();
+workTimeList.add(0,0f);
 for(int i=0; i<workLog.size();i++){
 	if(workLog.get(i).getWorkStartReal()!=null && workLog.get(i).getWorkEndReal()!=null){
 		workStartRealStr = formatter.format(workLog.get(i).getWorkStartReal());
@@ -134,6 +135,7 @@ for(int i=0; i<workLog.size();i++){
 		
 		long diff = workEndRealDate.getTime() - workStartRealDate.getTime();
 		long hour = diff/3600000;
+		
 		if(diff-3600000*hour>=1800000){
 			sumWorkTime = sumWorkTime + (float)hour + 0.5f;
 			workTimeList.add(i,(float)hour + 0.5f);
@@ -148,7 +150,7 @@ for(int i=0; i<workLog.size();i++){
 		}else{
 			sumWorkUnit = sumWorkUnit + (float)workLog.get(i).getWorkUnitReal();
 		}
-		System.out.println(sumWorkUnit);
+		
 			
 		
 	}
@@ -495,7 +497,7 @@ int intToday = Integer.parseInt(sdf.format(todayCal.getTime()));
 	<TD width='60px' align="center">
 	
 	<%
-if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("연구원")){%>
+if(UserDAO.getUserPosition(userId).equals("연구원")){%>
 근무 단위
 <%}else{ %>
 근무 시간
@@ -505,7 +507,7 @@ if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("�
 	
 	<TD width='242px' align="center">
 	<%
-if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("연구원")){%>
+if(UserDAO.getUserPosition(userId).equals("연구원")){%>
 비고
 <%}else{ %>
 근무 내용
@@ -659,7 +661,7 @@ String workStartReal = WorkDAO.getWorkStartReal(userId, yyyymmddForCheck);
 <div id="sumWorkUnit" style="display:block">총 근무 단위 : <%=sumWorkUnit %> 단위</div>
 </div>
 <%
-if(UserDAO.getUserPosition(UserDAO.getUserIdFromName(userNameSelect)).equals("연구원")){%>
+if(UserDAO.getUserPosition(userId).equals("연구원")){%>
 <script>
 document.getElementById("sumWorkTime").style.display="none";
 document.getElementById("sumWorkUnit").style.display="block";
