@@ -106,6 +106,42 @@ public class WorkDAO {
 			
 		} 
 		
+		public String getLunch(String userId, String workDate) {
+			String SQL = "SELECT * FROM work WHERE userId = ? AND workDate = ?";
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(SQL);
+				
+				pstmt.setString(1, userId);
+				
+				pstmt.setString(2, workDate);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					
+						return rs.getString("lunch");  // workStartReal이 NULL이 아닐 때
+					
+				}else {
+					String SQL1 = "INSERT INTO work (userId, workDate) VALUES (?, ?)";
+					
+					PreparedStatement pstmt1 = conn.prepareStatement(SQL1);
+					
+					pstmt1.setString(1, userId);
+					
+					pstmt1.setString(2, workDate);
+					
+					pstmt1.executeUpdate();
+					return "O"; // 해당 entry 자체가 존재하지 않을 때
+				}
+					
+			}catch (Exception e) {
+			
+				e.printStackTrace();
+		
+			}
+			return "O";
+		}
+		
 		public int isNullWorkStartReal(String userId,String workDate) {
 			String SQL = "SELECT * FROM work WHERE userId = ? AND workDate = ?";
 			try {
@@ -247,7 +283,11 @@ public class WorkDAO {
 						
 						long hour = diff/3600000;
 						
-						long unit = diff / 14400000;
+						if(getLunch(userId, stringD).equals("X")&&hour>0) {
+							hour= hour-1;
+						}
+						
+						long unit = hour/4;
 						
 						int workUnitReal = (int)unit;
 						
@@ -314,9 +354,20 @@ public class WorkDAO {
 						
 						long diff = workEndRealDate.getTime() - workStartRealDate.getTime();
 						
-						long unit = diff / 14400000;
+						long hour = diff/3600000;
+						
+						if(getLunch(userId, stringD).equals("X")&&hour>0) {
+							hour= hour-1;
+						}
+						
+						long unit = hour/4;
 						
 						int workUnitReal = (int)unit;
+						
+						if(hour>=6 && hour<8) { //1.5단위
+							workUnitReal = -1;
+						}
+					
 						
 						PreparedStatement pstmt = conn.prepareStatement(SQL);
 						
@@ -433,7 +484,7 @@ public class WorkDAO {
 		
 		public ArrayList<Work> getWorkLog(String userId, String year, String month){
 			
-			String SQL = "SELECT * FROM work WHERE userId = ? AND year(workDate)= ? AND month(workDate) = ? AND workStartReal != '' ";
+			String SQL = "SELECT * FROM work WHERE userId = ? AND year(workDate)= ? AND month(workDate) = ? AND workStartReal != ''  ";
 			
 			ArrayList<Work> workLog = new ArrayList<Work>();
 			
@@ -522,6 +573,80 @@ public class WorkDAO {
 					}else {
 						return 1;
 					}
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				return 0;
+			}
+			
+public int setLunch(String userId, String lunch) {
+				
+				String SQL = "UPDATE work set lunch = ? where userId = ? AND workDate = ?";
+				
+				try {
+					
+					today = formatter.format(cal.getTime());
+					
+					Timestamp ts = Timestamp.valueOf(today);
+					
+					String stringTs = formatter.format(ts);
+					
+					Date d = new Date(ts.getTime());
+					
+					String stringD = formatterForDate.format(d);
+					
+					PreparedStatement pstmt = conn.prepareStatement(SQL);
+					
+					pstmt.setString(1, lunch);
+					
+					pstmt.setString(2, userId);
+					
+					pstmt.setString(3, stringD);
+					
+					pstmt.executeUpdate();
+					
+					if(getWorkStartReal(userId, stringD)!=null && getWorkEndReal(userId, stringD)!=null) {
+						String workStartReal = getWorkStartReal(userId, stringD);
+						
+						Date workStartRealDate = formatter.parse(workStartReal);
+						
+						Date workEndRealDate = formatter.parse(stringTs);
+						
+						long diff = workEndRealDate.getTime() - workStartRealDate.getTime();
+						
+						long hour = diff/3600000;
+						
+						if(getLunch(userId, stringD).equals("X")&&hour>0) {
+							hour= hour-1;
+						}
+						
+						long unit = hour/4;
+						
+						int workUnitReal = (int)unit;
+						
+						if(hour>=6 && hour<8) { //1.5단위
+							workUnitReal = -1;
+						}
+						
+						String SQL1 = "UPDATE work set workUnitReal = ? where userId = ? AND workDate = ?";
+						
+						PreparedStatement pstmt1 = conn.prepareStatement(SQL1);
+						
+						pstmt1.setInt(1, workUnitReal);
+						
+						pstmt1.setString(2, userId);
+						
+						pstmt1.setString(3, stringD);
+						
+						
+
+						pstmt1.executeUpdate();
+						
+						
+					}
+					
+					return 1;
 					
 				}catch (Exception e) {
 					e.printStackTrace();
@@ -649,6 +774,8 @@ public class WorkDAO {
 				}
 				return 0;
 			}
+			
+			
 			
 			public void setWorkStartPlan(String userId, String workDate, String workStartPlan) {
 				String SQL = "UPDATE work SET workStartPlan = ? WHERE userId = ? AND workDate = ?";

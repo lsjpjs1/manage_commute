@@ -109,11 +109,7 @@
 
  </nav>
  
- <button style="height: 80px; width:100px" onclick="location='clickArriveAction.jsp'">출근</button>
- <span id="leave"><button style="height: 80px; width:100px" onclick="location='clickLeaveAction.jsp'">퇴근</button></span>
- <span id="reLeave"><button style="height: 80px; width:100px" onclick="location='reClickLeaveAction.jsp'">다시 퇴근</button></span>
-  <input type="checkbox" id="lunchCheck" onchange="location='lunchCheckAction.jsp'" name="lunchCheck" >점심시간 근무 여부
- <%
+  <%
  SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	
 	SimpleDateFormat formatterForDate = new SimpleDateFormat ("yyyy-MM-dd");
@@ -155,6 +151,12 @@
  document.getElementById("lunchCheck").checked=false;
  </script>
  <%} %>
+ 
+ <button style="height: 80px; width:100px" onclick="location='clickArriveAction.jsp'">출근</button>
+ <span id="leave"><button style="height: 80px; width:100px" onclick="location='clickLeaveAction.jsp'">퇴근</button></span>
+ <span id="reLeave"><button style="height: 80px; width:100px" onclick="location='reClickLeaveAction.jsp'">다시 퇴근</button></span>
+  <input type="checkbox" id="lunchCheck" onchange="location='lunchCheckAction.jsp'" name="lunchCheck" >점심시간 근무 여부
+
  
  <form action="addWorkContent.jsp" method="post">
  <pre>
